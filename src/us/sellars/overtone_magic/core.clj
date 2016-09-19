@@ -14,10 +14,10 @@
             [overtone.studio.inst :refer :all]
             [us.sellars.overtone-magic.players.sustain
              :refer [sustain-midi-poly-player sustain-midi-player-stop]]
-            #_[us.sellars.overtone-magic.players.mono
-             :refer [fm-midi-mono-player]]))
+            [us.sellars.overtone-magic.players.mono
+             :refer [fm-midi-mono-player fm-midi-mono-player-stop]]))
 #_
-;cd "C:\Program Files (x86)\SuperCollider-3.6.6"&scsynth.exe -u 57110
+;cd "C:\Program Files (x86)\SuperCollider-3.7.2"&scsynth.exe -u 57110
 
 ;(connect-external-server)
 ;(use 'overtone.inst.synth)
@@ -82,10 +82,10 @@
 
       #_(* amp output
          (env-gen (adsr 0.01 0.1 sustain 0.3) gate :action FREE)))))
-
+#_ (in-ns 'us.sellars.overtone-magic.core)
 (def one-mouth-whistle (fm-midi-mono-player whistle-wip))
 (stop)
-(fm-midi-mono-player-stop one-mouth-whistle)
+(us.sellars.overtone-magic.players.mono/fm-midi-mono-player-stop)   
 
 #_(def smpp (sustain-midi-poly-player overtone.inst.sampled-piano/sampled-piano))
 #_(sustain-midi-player-stop smpp)
@@ -337,7 +337,7 @@
 (clojure.repl/doc index:kr)
 
 ;(def x (midi-poly-player sampled-brass))
-(def horn (sustain-midi-poly-player sampled-brass))
+;(def horn (sustain-midi-poly-player sampled-brass))
 
 
 

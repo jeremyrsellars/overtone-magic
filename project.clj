@@ -47,15 +47,15 @@
             :distribution :repo}
 
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [overtone "0.10-SNAPSHOT"]]
+                 [overtone "0.10.1"]]
   :profiles {:test {:dependencies [[bultitude "0.2.0"]
                                    [polynome "0.2.2"]]
-                    :jvm-cmd "C:\\Program Files (x86)\\Java\\jdk1.8.0_66\\bin\\java.exe"}
-             :dev {  :jvm-cmd "C:\\Program Files (x86)\\Java\\jdk1.8.0_66\\bin\\java.exe"}}
+                    :jvm-cmd "C:\\Program Files\\Java\\jdk1.8.0_92\\bin\\java.exe"}
+             :dev {  :jvm-cmd "C:\\Program Files\\Java\\jdk1.8.0_92\\bin\\java.exe"}}
   :test-selectors {:core (fn [m] (not (some m [:gui :hw])))
                    :gui  :gui
                    :hw   :hw}
   :native-path "native"
   :min-lein-version "2.0.0"
-  :jvm-cmd "C:\\Program Files (x86)\\Java\\jdk1.8.0_66\\bin\\java.exe"
+  :jvm-cmd "C:\\Program Files\\Java\\jdk1.8.0_92\\bin\\java.exe"
   :jvm-opts ^:replace ~(jvm-opts))

@@ -47,10 +47,10 @@
                           (println "fingers:" @notes* ".  playing: " @node*))
          play           (fn play [pfn note]
                           (let [n (swap! node* #(or % (pfn)))]
-                            (swap! notes* cons note note)
+                            (swap! notes* #(cons note %))
                             (ctl n :note note)))
          release-note   (fn release-note [note desc]
-                          (let [new-notes (swap! notes* (fn [notes] (remove #(== note %))))
+                          (let [new-notes (swap! notes* (fn [notes] (remove #(= note %) notes)))
                                 n @node*]
                             (if (empty? new-notes)
                               (with-inactive-node-modification-error :silent
@@ -74,7 +74,7 @@
 
        (e/on-event off-event-key (fn [{note :note velocity :velocity}]
                                    (let [velocity (float (/ velocity 127))]
-                                     (when-let [n (get @notes* note)]
+                                     (when-let [n (some (partial = note) @notes*)]
                                        (release-note note "key up"))
                                      (dump-state)))
                    off-key)
@@ -91,7 +91,7 @@
          (swap! poly-players* assoc player-key player)
          player))))
 
-(defn sustain-midi-player-stop
+(defn fm-midi-mono-player-stop
   ([]
    (remove-event-handler [::fm-midi-mono-player :midi :note-on])
    (remove-event-handler [::fm-midi-mono-player :midi :note-off]))
@@ -100,19 +100,20 @@
      (midi-player-stop (get @poly-players* player-or-key))
      (let [player player-or-key]
        (when-not (= :fm-midi-mono-player (type player))
-         (throw (IllegalArgumentException. (str "Expected a midi-poly-player. Got: " (prn-str (type player))))))
+         (throw (IllegalArgumentException. (str "Expected a fm-midi-mono-player. Got: " (prn-str (type player))))))
        (remove-event-handler (:on-key player))
        (remove-event-handler (:off-key player))
        (reset! (:playing? player) false)
        (swap! poly-players* dissoc (:player-key player))
        player))))
 
-#_(comment)
-  (use 'overtone.core)
-  (use 'overtone.inst.synth)
-  (require '[overtone.studio.sustain-midi-player :as smp])
+#_(comment
+    (use 'overtone.core)
+    (use 'overtone.inst.synth)
+    (require '[overtone.studio.sustain-midi-player :as smp])
 
-  (smp/sustain-midi-player-stop smpp)
-  (def smpp (smp/fm-midi-mono-player overtone.inst.sampled-piano/sampled-piano))
-  (smp/sustain-midi-player-stop smpp)
-  (stop)
+    (smp/sustain-midi-player-stop smpp)
+    (def smpp (smp/fm-midi-mono-player overtone.inst.sampled-piano/sampled-piano))
+    (smp/sustain-midi-player-stop smpp)
+    (stop))
+
